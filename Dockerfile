@@ -18,7 +18,10 @@ RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-8512
 
 # Set environment variables for Android SDK
 ENV ANDROID_SDK_ROOT="/android-sdk"
-ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin"
+ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/cmdline-tools/bin"
+
+# Create a symbolic link to ensure sdkmanager is accessible
+RUN ln -s /android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager /usr/local/bin/sdkmanager
 
 # Install Android SDK packages
 RUN sdkmanager --update \
