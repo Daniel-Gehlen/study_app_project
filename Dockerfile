@@ -3,7 +3,7 @@ FROM gitpod/workspace-full
 
 USER root
 
-# Update package list and install Android SDK components
+# Update package list and install required packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-11-jdk-headless \
     wget \
@@ -18,11 +18,12 @@ RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-8512
 
 # Set environment variables for Android SDK
 ENV ANDROID_SDK_ROOT="/android-sdk"
-ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/bin"
+ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin"
 
 # Install Android SDK packages
-RUN sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses \
-    && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+RUN sdkmanager --update \
+    && sdkmanager --licenses \
+    && sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
 USER gitpod
 
