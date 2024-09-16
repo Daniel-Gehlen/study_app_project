@@ -1,0 +1,30 @@
+# Use the base Gitpod image
+FROM gitpod/workspace-full
+
+USER root
+
+# Update package list and install Android SDK components
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-11-jdk-headless \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Android SDK command line tools
+RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O /tmp/cmdline-tools.zip \
+    && mkdir -p /android-sdk/cmdline-tools \
+    && unzip /tmp/cmdline-tools.zip -d /android-sdk/cmdline-tools \
+    && rm /tmp/cmdline-tools.zip
+
+# Set environment variables for Android SDK
+ENV ANDROID_SDK_ROOT="/android-sdk"
+ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/bin"
+
+# Install Android SDK packages
+RUN sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses \
+    && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+
+USER gitpod
+
+# Set workspace directory
+WORKDIR /workspace
